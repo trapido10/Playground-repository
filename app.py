@@ -1,3 +1,4 @@
+
 import json
 import os
 import random
@@ -6,6 +7,13 @@ import streamlit as st
 DATA_FILE = "dnd_data.json"
 
 DEFAULT_DATA = {
+    "factions": [
+        "The Hoard",
+        "Dread Sovereign",
+        "Ebon Reavers",
+        "Silent Whisper",
+        "Zheng Letters"
+    ],
     "names": {
         "Human": {
             "first": ["Bram", "Clara", "Garrick", "Elena", "Marcus", "Talia", "Oswin", "Sera"],
@@ -81,33 +89,33 @@ DEFAULT_DATA = {
     "shop_nouns": ["Anvil", "Pouch", "Cauldron", "Tome", "Shelf", "Cart", "Flagon", "Chest"],
     "master_inventory": {
         "Blacksmith & Armory": [
-            {"item": "Balanced Dagger", "price": "12 gp", "tier": "Common", "desc": "Finely weighted for throwing."},
-            {"item": "Reinforced Shield", "price": "15 gp", "tier": "Common", "desc": "Dented iron banding, sturdy construction."},
-            {"item": "Whetstone of Keening", "price": "5 gp", "tier": "Common", "desc": "Puts a razor edge on blades."},
+            {"item": "Balanced Dagger", "price": "12 gp", "tier": "Common", "desc": "Finely weighted for throwing. [+1 Attack]"},
+            {"item": "Reinforced Shield", "price": "15 gp", "tier": "Common", "desc": "Dented iron banding, sturdy construction. [+1 AC]"},
+            {"item": "Whetstone of Keening", "price": "5 gp", "tier": "Common", "desc": "Puts a razor edge on blades for 1 hour. [+2 Damage]"},
             {"item": "Iron Spikes (10 pack)", "price": "1 gp", "tier": "Common", "desc": "Crucial for wedging doors open."},
-            {"item": "Mithril-Plated Greaves", "price": "85 gp", "tier": "Uncommon", "desc": "Lighter and surprisingly tough."},
-            {"item": "Flame-Etched Longsword", "price": "150 gp", "tier": "Rare", "desc": "Emits a faint ambient warmth."}
+            {"item": "Mithril-Plated Greaves", "price": "85 gp", "tier": "Uncommon", "desc": "Lighter and surprisingly tough. [+2 Dexterity (Acrobatics)]"},
+            {"item": "Flame-Etched Longsword", "price": "150 gp", "tier": "Rare", "desc": "Emits a faint ambient warmth. [+5 Fire Damage]"}
         ],
         "Alchemist & Herbalist": [
-            {"item": "Draft of Swift Footing", "price": "25 gp", "tier": "Uncommon", "desc": "Adds 10 ft to movement for 1 minute."},
-            {"item": "Soothing Balm", "price": "10 gp", "tier": "Common", "desc": "Smells like pine; heals minor cuts."},
-            {"item": "Glowing Moss Vial", "price": "8 gp", "tier": "Common", "desc": "Emits soft green light for 2 hours."},
-            {"item": "Smelling Salts", "price": "3 gp", "tier": "Common", "desc": "Instantly wakes an unconscious ally."},
-            {"item": "Troll-Blood Extract", "price": "120 gp", "tier": "Rare", "desc": "Accelerates natural tissue regeneration."}
+            {"item": "Draft of Swift Footing", "price": "25 gp", "tier": "Uncommon", "desc": "Adds 10 ft to movement for 1 minute. [+2 Dexterity]"},
+            {"item": "Soothing Balm", "price": "10 gp", "tier": "Common", "desc": "Smells like pine; heals minor cuts. [+5 Max HP (Temp)]"},
+            {"item": "Glowing Moss Vial", "price": "8 gp", "tier": "Common", "desc": "Emits soft green light for 2 hours. [+5 Damage]"},
+            {"item": "Smelling Salts", "price": "3 gp", "tier": "Common", "desc": "Instantly wakes an unconscious ally. [+2 Constitution Saves]"},
+            {"item": "Troll-Blood Extract", "price": "120 gp", "tier": "Rare", "desc": "Accelerates natural tissue regeneration. [+3 Constitution]"}
         ],
         "General Provisioner": [
-            {"item": "Rope, Hempens (50 ft)", "price": "1 gp", "tier": "Common", "desc": "Sturdy and slightly frayed at one end."},
-            {"item": "Iron Rations (5 days)", "price": "2 gp", "tier": "Common", "desc": "Hardtack, dried fruit, and salted beef."},
+            {"item": "Rope, Hempens (50 ft)", "price": "1 gp", "tier": "Common", "desc": "Sturdy and slightly frayed at one end. [+1 Athletics]"},
+            {"item": "Iron Rations (5 days)", "price": "2 gp", "tier": "Common", "desc": "Hardtack, dried fruit, and salted beef. [+1 Constitution]"},
             {"item": "Tallow Candles (10 pack)", "price": "1 sp", "tier": "Common", "desc": "Smells faintly of mutton fat."},
             {"item": "Waterskin (Full)", "price": "2 sp", "tier": "Common", "desc": "Holds clean river water."},
-            {"item": "Everburn Torch", "price": "50 gp", "tier": "Uncommon", "desc": "Magical flame that never consumes fuel."}
+            {"item": "Everburn Torch", "price": "50 gp", "tier": "Uncommon", "desc": "Magical flame that never consumes fuel. [+2 Perception]"}
         ],
         "Arcane Curiosities": [
-            {"item": "Unlabeled Glass Prism", "price": "30 gp", "tier": "Uncommon", "desc": "Refracts light into shifting colors."},
-            {"item": "Chalk of Warding", "price": "10 gp", "tier": "Common", "desc": "Emits a faint static hum when touched."},
-            {"item": "Whispering Seashell", "price": "15 gp", "tier": "Common", "desc": "Plays distant crashing waves."},
-            {"item": "Faded Parchment Map", "price": "20 gp", "tier": "Common", "desc": "Points to an unverified ruin."},
-            {"item": "Ring of Minor Shielding", "price": "200 gp", "tier": "Rare", "desc": "Absorbs the first 5 damage taken."}
+            {"item": "Unlabeled Glass Prism", "price": "30 gp", "tier": "Uncommon", "desc": "Refracts light into shifting colors. [+2 Arcana]"},
+            {"item": "Chalk of Warding", "price": "10 gp", "tier": "Common", "desc": "Emits a faint static hum when touched. [+1 Intelligence]"},
+            {"item": "Whispering Seashell", "price": "15 gp", "tier": "Common", "desc": "Plays distant crashing waves. [+2 Wisdom]"},
+            {"item": "Faded Parchment Map", "price": "20 gp", "tier": "Common", "desc": "Points to an unverified ruin. [+2 Survival]"},
+            {"item": "Ring of Minor Shielding", "price": "200 gp", "tier": "Rare", "desc": "Absorbs incoming kinetic force. [+2 AC]"}
         ]
     },
     "enemy_roster": [
@@ -332,9 +340,32 @@ if app_mode == "Tavern Generator":
     patron_count = st.sidebar.slider("Tavern Patrons", min_value=1, max_value=4, value=2)
 
 st.sidebar.markdown("---")
-st.sidebar.caption("Edit `dnd_data.json` to customize names, traits, and inventory.")
+st.sidebar.caption("Edit `dnd_data.json` to customize names, factions, traits, and inventory.")
 
-# --- HTML RENDERERS ---
+# --- HELPER FUNCTIONS ---
+def get_possible_faction():
+    factions = data.get("factions") or DEFAULT_DATA["factions"]
+    return random.choice(factions + ["None / Unaffiliated"])
+
+def get_enemy_faction():
+    factions = data.get("factions") or DEFAULT_DATA["factions"]
+    return random.choice(factions)
+
+def create_npc(occupation=None, race=None):
+    races = list(data["names"].keys())
+    chosen_race = race if race in races else random.choice(races)
+    first_name = random.choice(data["names"][chosen_race]["first"])
+    last_name = random.choice(data["names"][chosen_race]["last"])
+    return {
+        "Name": f"{first_name} {last_name}",
+        "Race": chosen_race,
+        "Occupation": occupation if occupation else random.choice(data["occupations"]),
+        "PossibleFaction": get_possible_faction(),
+        "Appearance": random.choice(data["appearances"]),
+        "Quirk": random.choice(data["quirks"]),
+        "Secret": random.choice(data["secrets"])
+    }
+
 def render_npc_card(npc):
     st.markdown(f"""
     <div class="npc-card">
@@ -342,6 +373,7 @@ def render_npc_card(npc):
             <span class="npc-header">{npc['Name']}</span>
             <span class="npc-meta">{npc['Race']} | {npc['Occupation']}</span>
         </div>
+        <div class="npc-detail"><strong>Possible Faction:</strong> {npc['PossibleFaction']}</div>
         <div class="npc-detail"><strong>Appearance:</strong> {npc['Appearance']}</div>
         <div class="npc-detail"><strong>Quirk:</strong> {npc['Quirk']}</div>
         <div class="npc-secret"><strong>Secret:</strong> {npc['Secret']}</div>
@@ -356,18 +388,7 @@ if app_mode == "NPC Generator":
     
     if st.button("Generate NPC"):
         chosen_race = None if selected_race == "Random" else selected_race
-        race = chosen_race if chosen_race in races else random.choice(races)
-        first_name = random.choice(data["names"][race]["first"])
-        last_name = random.choice(data["names"][race]["last"])
-        
-        npc = {
-            "Name": f"{first_name} {last_name}",
-            "Race": race,
-            "Occupation": random.choice(data["occupations"]),
-            "Appearance": random.choice(data["appearances"]),
-            "Quirk": random.choice(data["quirks"]),
-            "Secret": random.choice(data["secrets"])
-        }
+        npc = create_npc(race=chosen_race)
         render_npc_card(npc)
 
 elif app_mode == "Tavern Generator":
@@ -386,16 +407,7 @@ elif app_mode == "Tavern Generator":
         </div>
         """, unsafe_allow_html=True)
         
-        barkeep_race = random.choice(list(data["names"].keys()))
-        barkeep = {
-            "Name": f"{random.choice(data['names'][barkeep_race]['first'])} {random.choice(data['names'][barkeep_race]['last'])}",
-            "Race": barkeep_race,
-            "Occupation": "Tavern Keeper",
-            "Appearance": random.choice(data["appearances"]),
-            "Quirk": random.choice(data["quirks"]),
-            "Secret": random.choice(data["secrets"])
-        }
-        
+        barkeep = create_npc(occupation="Tavern Keeper")
         st.markdown("**Staff**")
         render_npc_card(barkeep)
         
@@ -403,15 +415,7 @@ elif app_mode == "Tavern Generator":
         cols = st.columns(2) if patron_count > 1 else [st.container()]
         
         for i in range(patron_count):
-            patron_race = random.choice(list(data["names"].keys()))
-            patron = {
-                "Name": f"{random.choice(data['names'][patron_race]['first'])} {random.choice(data['names'][patron_race]['last'])}",
-                "Race": patron_race,
-                "Occupation": random.choice(data["occupations"]),
-                "Appearance": random.choice(data["appearances"]),
-                "Quirk": random.choice(data["quirks"]),
-                "Secret": random.choice(data["secrets"])
-            }
+            patron = create_npc()
             with cols[i % 2]:
                 render_npc_card(patron)
 
@@ -433,16 +437,7 @@ elif app_mode == "Shop Generator":
         </div>
         """, unsafe_allow_html=True)
         
-        keeper_race = random.choice(list(data["names"].keys()))
-        keeper = {
-            "Name": f"{random.choice(data['names'][keeper_race]['first'])} {random.choice(data['names'][keeper_race]['last'])}",
-            "Race": keeper_race,
-            "Occupation": "Shopkeeper",
-            "Appearance": random.choice(data["appearances"]),
-            "Quirk": random.choice(data["quirks"]),
-            "Secret": random.choice(data["secrets"])
-        }
-        
+        keeper = create_npc(occupation="Shopkeeper")
         st.markdown("**Proprietor**")
         render_npc_card(keeper)
         
@@ -458,7 +453,13 @@ elif app_mode == "Enemy Generator":
     st.subheader("Low-Level Enemy Generator")
     
     roster = data.get("enemy_roster") or DEFAULT_DATA["enemy_roster"]
-    selected_enemy_type = st.selectbox("Enemy Type:", ["Random"] + [e["name"] for e in roster])
+    factions = data.get("factions") or DEFAULT_DATA["factions"]
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        selected_enemy_type = st.selectbox("Enemy Type:", ["Random"] + [e["name"] for e in roster])
+    with col2:
+        selected_faction = st.selectbox("Faction Filter:", ["Random"] + factions)
     
     if st.button("Generate Enemy"):
         if selected_enemy_type == "Random":
@@ -466,12 +467,15 @@ elif app_mode == "Enemy Generator":
         else:
             enemy = next((e for e in roster if e["name"] == selected_enemy_type), roster[0])
             
+        enemy_faction = get_enemy_faction() if selected_faction == "Random" else selected_faction
+            
         st.markdown(f"""
         <div class="enemy-card">
             <div class="npc-top-row">
                 <span class="shop-header">{enemy['name']}</span>
-                <span class="npc-meta">CR {enemy['cr']}</span>
+                <span class="npc-meta">CR {enemy['cr']} | {enemy_faction}</span>
             </div>
+            <div class="npc-detail"><strong>Faction:</strong> {enemy_faction}</div>
             <div class="npc-detail"><strong>Armor Class:</strong> {enemy['ac']} &nbsp;|&nbsp; <strong>Hit Points:</strong> {enemy['hp']} &nbsp;|&nbsp; <strong>Speed:</strong> {enemy['speed']}</div>
             <div class="npc-detail"><strong>Primary Attack:</strong> {enemy['attack']}</div>
             <div class="npc-secret"><strong>Special Trait:</strong> {enemy['trait']}</div>
