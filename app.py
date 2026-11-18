@@ -11,8 +11,8 @@ DEFAULT_DATA = {
         "The Hoard",
         "Dread Sovereign",
         "Ebon Reavers",
-        "Silent Whisper",
-        "Zheng Letters"
+        "Silent Whisperers",
+        "Friendly"
     ],
     "names": {
         "Human": {
